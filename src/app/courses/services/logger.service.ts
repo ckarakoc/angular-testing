@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 
 @Injectable({
@@ -6,7 +6,7 @@ import {Injectable} from '@angular/core';
 })
 export class LoggerService {
 
-  log(message:string) {
+  log(message: string) {
     console.log(message);
   }
 
