@@ -550,8 +550,6 @@ export const LESSONS = {
 };
 
 
-
-
 export function findCourseById(courseId: number) {
   return COURSES[courseId];
 }
