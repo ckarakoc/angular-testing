@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, fakeAsync, flush, flushMicrotasks, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, fakeAsync, flush, flushMicrotasks, TestBed, tick } from '@angular/core/testing';
 import { CoursesModule } from '../courses.module';
 import { DebugElement } from '@angular/core';
 
@@ -14,7 +14,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { click } from '../common/test-utils';
 
 
-fdescribe('HomeComponent', () => {
+describe('HomeComponent', () => {
 
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
@@ -47,9 +47,7 @@ fdescribe('HomeComponent', () => {
   }));
 
   it("should create the component", () => {
-
     expect(component).toBeTruthy();
-
   });
 
 
@@ -80,21 +78,41 @@ fdescribe('HomeComponent', () => {
   });
 
 
-  it("should display advanced courses when tab clicked", () => {
+  it("should display advanced courses when tab clicked - fakeAsync", fakeAsync(() => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
     fixture.detectChanges();
 
     const tabs = de.queryAll(By.css('.mdc-tab'));
 
     click(tabs[1]);
+    fixture.detectChanges();
 
-    // todo: failing test
-    const cardTitles = de.queryAll(By.css('.mat-mdc-card-title'));
+    flush();
+    // request animation take 16 ms instead of flush() you can just wait for 16ms
+    // tick(16);
+
+    const cardTitles = de.queryAll(By.css('.mat-mdc-tab-body-active .mat-mdc-card-title'));
 
     expect(cardTitles.length).toBeGreaterThan(0);
     expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course");
-  });
+  }));
 
+  it("should display advanced courses when tab clicked - async", waitForAsync(() => {
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+    fixture.detectChanges();
+
+    const tabs = de.queryAll(By.css('.mdc-tab'));
+
+    click(tabs[1]);
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+      console.log('called when stable');
+      const cardTitles = de.queryAll(By.css('.mat-mdc-tab-body-active .mat-mdc-card-title'));
+      expect(cardTitles.length).toBeGreaterThan(0);
+      expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course");
+    });
+  }));
 });
 
 
