@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "build:prod": "ng build --prod",
+    "build:prod": "ng build --configuration production",
     "start:prod": "http-server ./dist -a localhost -p 4200",
     "build-and-start:prod": "run-s build:prod start:prod",
     "e2e": "start-server-and-test build-and-start:prod http://localhost:4200 cypress:run"
